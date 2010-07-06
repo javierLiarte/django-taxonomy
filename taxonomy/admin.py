@@ -1,5 +1,9 @@
 from django.contrib import admin
+from django.contrib.contenttypes import generic
 from taxonomy.models import Taxonomy, TaxonomyTerm, TaxonomyMap
+
+class TaxonomyMapInline(generic.GenericTabularInline):
+    model = TaxonomyMap
 
 class TaxonomyAdmin(admin.ModelAdmin):
    pass
