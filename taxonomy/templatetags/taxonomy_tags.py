@@ -1,7 +1,7 @@
 from django.db.models import get_model
 from django.template import Library, Node, TemplateSyntaxError, Variable, resolve_variable
 
-from taxonomy.models import TaxonomyMap
+from taxonomy.models import Taxon
 
 register = Library()
 
@@ -12,12 +12,12 @@ class TaxonomyForObjectNode(Node):
 
     def render(self, context):
         context[self.context_var] = \
-            TaxonomyMap.objects.get_for_object(self.obj.resolve(context))
+            Taxon.objects.get_for_object(self.obj.resolve(context))
         return ''
 
 def do_taxonomy_for_object(parser, token):
     """
-    Retrieves a list of ``TaxonomyMap`` objects and stores them in a context variable.
+    Retrieves a list of ``Taxon`` objects and stores them in a context variable.
 
     Usage::
 

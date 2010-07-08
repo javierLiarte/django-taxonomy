@@ -21,10 +21,10 @@ class TaxonomyManager(models.Manager):
        taxonomy_list = self.get_for_object(obj)
        taxonomy_dict = {}
        for t_item in taxonomy_list:
-            if t_item.type not in taxonomy_dict:
-                taxonomy_dict[t_item.type] = [t_item]
+            if t_item.taxonomy not in taxonomy_dict:
+                taxonomy_dict[t_item.taxonomy] = [t_item]
             else:
-                taxonomy_dict[t_item.type].append(t_item)
+                taxonomy_dict[t_item.taxonomy].append(t_item)
 
 
 
@@ -34,42 +34,44 @@ class TaxonomyManager(models.Manager):
 
 class Taxonomy(models.Model):
    """A facility for creating custom content classification types""" 
-   type = models.CharField(max_length=50, unique=True)
+   name = models.CharField(max_length=50, unique=True)
 
    class Meta:
       verbose_name = "taxonomy"  
       verbose_name_plural = "taxonomies"
 
    def __unicode__(self): 
-      return self.type
+      return self.name
 
 class TaxonomyTerm(models.Model):
    """Terms are associated with a specific Taxonomy, and should be generically usable with any contenttype"""
-   type = models.ForeignKey(Taxonomy)
+   taxonomy = models.ForeignKey(Taxonomy)
    term = models.CharField(max_length=50)
    parent = models.ForeignKey('self', null=True,blank=True)
 
    class Meta:
-      unique_together = ('type', 'term')
+      unique_together = ('taxonomy', 'term')
 
    def __unicode__(self):
-      return self.term
+      return u"%s [%s]" % (self.term, self.taxonomy)
 
-class TaxonomyMap(models.Model):
+class Taxon(models.Model):
    """Mappings between content and any taxonomy types/terms used to classify it"""
    term        = models.ForeignKey(TaxonomyTerm, db_index=True)
-   type        = models.ForeignKey(Taxonomy, db_index=True)
    content_type = models.ForeignKey(ContentType, verbose_name='content type', db_index=True)
    object_id      = models.PositiveIntegerField(db_index=True)   
    object         = generic.GenericForeignKey('content_type', 'object_id')
 
    objects = TaxonomyManager()
 
+
    class Meta:
-      unique_together = ('term', 'type', 'content_type', 'object_id')
-      
+      unique_together = ('term', 'content_type', 'object_id')
+      verbose_name_plural = "Taxa"
+
+
 
    def __unicode__(self):
-      return u'%s [%s]' % (self.term, self.type)
+      return u'%s' % self.term
 
 
