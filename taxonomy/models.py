@@ -14,6 +14,19 @@ class TaxonomyManager(models.Manager):
       return self.filter(content_type__pk=ctype.pk,
                          object_id=obj.pk)
 
+   def get_taxonomy_dict_for_object(self, obj):
+       """
+       Get all taxonomy type-term pairings, as a dictionary
+       """
+       taxonomy_list = self.get_for_object(obj)
+       taxonomy_dict = {}
+       for t_item in taxonomy_list:
+            if t_item.type not in taxonomy_dict:
+                taxonomy_dict[t_item.type] = [t_item]
+            else:
+                taxonomy_dict[t_item.type].append(t_item)
+
+
 
 ###
 ### Models 
@@ -54,6 +67,7 @@ class TaxonomyMap(models.Model):
 
    class Meta:
       unique_together = ('term', 'type', 'content_type', 'object_id')
+      
 
    def __unicode__(self):
       return u'%s [%s]' % (self.term, self.type)
