@@ -26,6 +26,13 @@ class TaxonomyManager(models.Manager):
             else:
                 taxonomy_dict[t_item.taxonomy].append(t_item)
 
+   def get_objects_of_type_for_term(self, term_list, object_type):
+       """
+       Get all objects of the type specified that have the term attached
+       """
+       object_ctype = ContentType.objects.get_for_model(object_type)
+       object_ids = self.filter(term__in=term_list, content_type=object_ctype).values_list('object_id', flat=True)
+       return object_type.objects.filter(id__in=object_ids)
 
 
 ###

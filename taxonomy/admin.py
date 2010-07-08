@@ -14,6 +14,8 @@ class TaxonInline(generic.GenericStackedInline):
     model = Taxon
     fields = ['term',]
 
+
+
     formset = TaxonInlineFormset
 
 
