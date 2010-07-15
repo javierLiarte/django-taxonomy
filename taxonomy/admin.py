@@ -7,7 +7,11 @@ from django.core.exceptions import ValidationError
 class TaxonInlineFormset(generic.BaseGenericInlineFormSet):
     def clean(self):
         ll = map(str, filter(bool, self.cleaned_data))
-        if ll != list(set(ll)):
+        # setlist and ll may be in different orders
+        ll.sort()
+        setlist = list(set(ll))
+        setlist.sort()
+        if ll != setlist:
             raise ValidationError("Taxa must be unique.")
 
 class TaxonInline(generic.GenericStackedInline):
