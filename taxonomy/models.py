@@ -46,6 +46,7 @@ class Taxonomy(models.Model):
    class Meta:
       verbose_name = "taxonomy"  
       verbose_name_plural = "taxonomies"
+      ordering = ['name',]
 
    def __unicode__(self): 
       return self.name
@@ -58,9 +59,10 @@ class TaxonomyTerm(models.Model):
 
    class Meta:
       unique_together = ('taxonomy', 'term')
+      ordering = ['taxonomy', 'term']
 
    def __unicode__(self):
-      return u"%s [%s]" % (self.term, self.taxonomy)
+      return u"[%s] %s" % (self.taxonomy, self.term)
 
 class Taxon(models.Model):
    """Mappings between content and any taxonomy types/terms used to classify it"""
