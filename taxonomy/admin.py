@@ -5,7 +5,8 @@ class TaxonomyAdmin(admin.ModelAdmin):
    pass
 
 class TaxonomyTermAdmin(admin.ModelAdmin):
-   pass
+    list_display = ('term', 'type', 'parent')
+    list_filter = ['type']
 
 class TaxonomyMapAdmin(admin.ModelAdmin):
    pass
