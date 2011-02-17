@@ -1,17 +1,23 @@
 from django.contrib import admin
-from taxonomy.models import Taxonomy, TaxonomyTerm, TaxonomyMap
+from django.contrib.contenttypes import generic
+from django.core.exceptions import ValidationError
+from taxonomy.models import Taxonomy, TaxonomyTerm, Taxon
+
+class TaxonInline(generic.GenericStackedInline):
+    model = Taxon
+    fields = ['term']
 
 class TaxonomyAdmin(admin.ModelAdmin):
    pass
 
 class TaxonomyTermAdmin(admin.ModelAdmin):
-    list_display = ('term', 'type', 'parent')
-    list_filter = ['type']
+    list_display = ('term', 'taxonomy', 'parent')
+    list_filter = ['taxonomy']
 
-class TaxonomyMapAdmin(admin.ModelAdmin):
+class TaxonAdmin(admin.ModelAdmin):
    pass
 
 
 admin.site.register(Taxonomy, TaxonomyAdmin)
 admin.site.register(TaxonomyTerm, TaxonomyTermAdmin)
-admin.site.register(TaxonomyMap, TaxonomyMapAdmin)
+admin.site.register(Taxon, TaxonAdmin)
