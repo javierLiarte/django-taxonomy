@@ -8,11 +8,28 @@ class TaxonInline(generic.GenericStackedInline):
     fields = ['term']
 
 class TaxonomyAdmin(admin.ModelAdmin):
-   pass
+    fieldsets = (
+        (None, {
+            'fields': ('type',),
+        }),
+        ('Advanced', {
+            'fields': ('slug',),
+            'classes': ('collapse',),
+        }),
+    )
 
 class TaxonomyTermAdmin(admin.ModelAdmin):
     list_display = ('term', 'taxonomy', 'parent')
     list_filter = ['taxonomy']
+    fieldsets = (
+        (None, {
+            'fields': ('taxonomy', 'term', 'parent',),
+        }),
+        ('Advanced', {
+            'fields': ('slug',),
+            'classes': ('collapse',),
+        }),
+    )
 
 class TaxonAdmin(admin.ModelAdmin):
    pass

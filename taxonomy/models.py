@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.template.defaultfilters import slugify
 
 ###
 ### Managers
@@ -50,6 +51,7 @@ class TaxonomyManager(models.Manager):
 class Taxonomy(models.Model):
     """A facility for creating custom content classification types""" 
     type = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(blank=True)
 
     class Meta:
         verbose_name = "taxonomy"  
@@ -58,10 +60,16 @@ class Taxonomy(models.Model):
     def __unicode__(self): 
         return self.type
 
+    def save(self, *args, **kwargs):
+        if self.slug == "":
+            self.slug = slugify(self.type)
+        super(Taxonomy, self).save(*args, **kwargs)
+
 class TaxonomyTerm(models.Model):
     """Terms are associated with a specific Taxonomy, and should be generically usable with any contenttype"""
     taxonomy = models.ForeignKey(Taxonomy, related_name='terms')
     term = models.CharField(max_length=50)
+    slug = models.SlugField(blank=True)
     parent = models.ForeignKey('self', null=True,blank=True)
 
     class Meta:
@@ -70,6 +78,11 @@ class TaxonomyTerm(models.Model):
 
     def __unicode__(self):
         return self.term
+
+    def save(self, *args, **kwargs):
+        if self.slug == "":
+            self.slug = slugify(self.type)
+        super(TaxonomyTerm, self).save(*args, **kwargs)
 
 class Taxon(models.Model):
     """Mappings between content and any taxonomy types/terms used to classify it"""
