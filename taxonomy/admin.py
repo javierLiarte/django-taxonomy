@@ -6,7 +6,7 @@ class TaxonomyAdmin(admin.ModelAdmin):
    pass
 
 class TaxonomyTermAdmin(MPTTModelAdmin):
-   list_display = ('type', 'term')
+   list_display = ('term','type')
    list_filter = ('type',)
 
 class TaxonomyMapAdmin(admin.ModelAdmin):
