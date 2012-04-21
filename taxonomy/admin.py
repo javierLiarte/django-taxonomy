@@ -9,7 +9,7 @@ class TaxonomyTermAdmin(MPTTModelAdmin):
    list_display = ('term','type')
    list_filter = ('type',)
 
-class TaxonomyMapAdmin(admin.ModelAdmin):
+class TaxonomyMapAdmin(MPTTModelAdmin):
    pass
 
 

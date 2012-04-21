@@ -54,7 +54,7 @@ class TaxonomyTerm(MPTTModel):
 
 class TaxonomyMap(models.Model):
    """Mappings between content and any taxonomy types/terms used to classify it"""
-   term        = models.ForeignKey(TaxonomyTerm, db_index=True)
+   term        = TreeForeignKey(TaxonomyTerm, db_index=True)
    type        = models.ForeignKey(Taxonomy, db_index=True)
    content_type = models.ForeignKey(ContentType, verbose_name='content type', db_index=True)
    object_id      = models.PositiveIntegerField(db_index=True)   
