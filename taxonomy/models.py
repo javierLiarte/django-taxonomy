@@ -68,4 +68,6 @@ class TaxonomyMap(models.Model):
    def __unicode__(self):
       return u'%s [%s]' % (self.term, self.type)
 
-
+   def clean(self):
+      if self.term.type != self.type:
+         raise ValidationError("Term must belong to the same taxonomy! Current: {},{}".format(self.type,self.term.type))
