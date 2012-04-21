@@ -1,10 +1,11 @@
 from django.contrib import admin
 from taxonomy.models import Taxonomy, TaxonomyTerm, TaxonomyMap
+from mptt.admin import MPTTModelAdmin
 
 class TaxonomyAdmin(admin.ModelAdmin):
    pass
 
-class TaxonomyTermAdmin(admin.ModelAdmin):
+class TaxonomyTermAdmin(MPTTModelAdmin):
    pass
 
 class TaxonomyMapAdmin(admin.ModelAdmin):

@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from mptt.models import MPTTModel
+from mptt.fields import TreeForeignKey
+from django.core.exceptions import ValidationError
 
 ###
 ### Managers
@@ -30,17 +33,24 @@ class Taxonomy(models.Model):
    def __unicode__(self): 
       return self.type
 
-class TaxonomyTerm(models.Model):
+class TaxonomyTerm(MPTTModel):
    """Terms are associated with a specific Taxonomy, and should be generically usable with any contenttype"""
    type = models.ForeignKey(Taxonomy)
    term = models.CharField(max_length=50)
-   parent = models.ForeignKey('self', null=True,blank=True)
+   parent = TreeForeignKey('self', null=True,blank=True)
 
    class Meta:
       unique_together = ('type', 'term')
 
    def __unicode__(self):
       return self.term
+   
+   def clean(self):
+      if self.parent:
+         if self.parent.type != self.type:
+            raise ValidationError("Both parent and this term must "
+            "share the same taxonomy!\n"
+            "Current: {}, {}".format(self.parent.type,self.type))
 
 class TaxonomyMap(models.Model):
    """Mappings between content and any taxonomy types/terms used to classify it"""
