@@ -81,7 +81,7 @@ class TaxonomyTerm(models.Model):
 
     def save(self, *args, **kwargs):
         if self.slug == "":
-            self.slug = slugify(self.type)
+            self.slug = slugify(self.term)
         super(TaxonomyTerm, self).save(*args, **kwargs)
 
 class Taxon(models.Model):
