@@ -21,6 +21,7 @@ class TaxonomyAdmin(admin.ModelAdmin):
 class TaxonomyTermAdmin(admin.ModelAdmin):
     list_display = ('term', 'taxonomy', 'parent')
     list_filter = ['taxonomy']
+    search_fields = ('term',)
     fieldsets = (
         (None, {
             'fields': ('taxonomy', 'term', 'parent',),
