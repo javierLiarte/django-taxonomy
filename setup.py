@@ -1,14 +1,13 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='django-taxonomy',
-    version='0.0.1',
+    version='0.1.0',
     description='A flexible taxonomy approach for Django.',
-    author='Brian K. Jones',
-    author_email='bkjones@gmail.com',
-    url='http://github.com/bkjones/django-taxonomy',
+    author="Mike O'Malley",
+    author_email='spuriousdata@gmail.com',
+    url='http://github.com/spuriousdata/django-taxonomy',
     packages=[
         'taxonomy',
         'taxonomy.templatetags',

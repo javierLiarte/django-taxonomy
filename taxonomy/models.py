@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
@@ -73,7 +74,7 @@ class TaxonomyTerm(models.Model):
     parent = models.ForeignKey('self', null=True,blank=True)
 
     class Meta:
-        unique_together = ('taxonomy', 'term')
+        unique_together = ('taxonomy', 'term', 'parent')
         ordering = ['taxonomy', 'term']
 
     def __unicode__(self):
@@ -88,13 +89,15 @@ class Taxon(models.Model):
     """Mappings between content and any taxonomy types/terms used to classify it"""
     term         = models.ForeignKey(TaxonomyTerm, db_index=True, related_name='taxa')
     content_type = models.ForeignKey(ContentType, verbose_name='content type', db_index=True)
-    object_id    = models.PositiveIntegerField(db_index=True)    
+    object_id    = models.CharField(
+                    max_length=getattr(settings, "TAXONOMY", 
+                        {'pk_max_length':128})['pk_max_length'], db_index=True)
     object       = generic.GenericForeignKey('content_type', 'object_id')
 
     objects = TaxonomyManager()
 
     class Meta:
-        unique_together = ('term', 'content_type', 'object_id')
+        unique_together = (('term', 'content_type', 'object_id'),)
         verbose_name_plural = "Taxa"
 
     def __unicode__(self):
