@@ -38,7 +38,7 @@ class TaxonomyManager(models.Manager):
         object_ctype = ContentType.objects.get_for_model(klass)
         object_ids = self.filter(term__in=terms, content_type=object_ctype).values_list(
                    'object_id', flat=True)
-        return klass.objects.filter(id__in=object_ids)
+        return klass.objects.filter(pk__in=object_ids)
 
     def get_for_object_and_taxonomy(self, obj, taxonomy):
         tdict = self.get_dict_for_object(obj)
