@@ -3,6 +3,9 @@ from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
+from mptt.models import MPTTModel
+from mptt.fields import TreeForeignKey
+from django.core.exceptions import ValidationError
 
 ###
 ### Managers
@@ -66,26 +69,33 @@ class Taxonomy(models.Model):
             self.slug = slugify(self.type)
         super(Taxonomy, self).save(*args, **kwargs)
 
-class TaxonomyTerm(models.Model):
+class TaxonomyTerm(MPTTModel):
     """Terms are associated with a specific Taxonomy, and should be generically usable with any contenttype"""
     taxonomy = models.ForeignKey(Taxonomy, related_name='terms')
     term = models.CharField(max_length=50)
+    parent = TreeForeignKey('self', null=True,blank=True)
     slug = models.SlugField(blank=True)
-    parent = models.ForeignKey('self', null=True,blank=True)
 
     class Meta:
         unique_together = ('taxonomy', 'term', 'parent')
         ordering = ['taxonomy', 'term']
 
-    def __unicode__(self):
-        return self.term
+   def __unicode__(self):
+      return self.term
+   
+   def clean(self):
+      if self.parent:
+         if self.parent.type != self.type:
+            raise ValidationError("Both parent and this term must "
+            "share the same taxonomy!\n"
+            "Current: {}, {}".format(self.parent.type,self.type))
 
     def save(self, *args, **kwargs):
         if self.slug == "":
             self.slug = slugify(self.term)
         super(TaxonomyTerm, self).save(*args, **kwargs)
 
-class Taxon(models.Model):
+class TaxonomyMap(models.Model):
     """Mappings between content and any taxonomy types/terms used to classify it"""
     term         = models.ForeignKey(TaxonomyTerm, db_index=True, related_name='taxa')
     content_type = models.ForeignKey(ContentType, verbose_name='content type', db_index=True)
@@ -98,9 +108,10 @@ class Taxon(models.Model):
 
     class Meta:
         unique_together = (('term', 'content_type', 'object_id'),)
-        verbose_name_plural = "Taxa"
 
     def __unicode__(self):
         return u'%s' % self.term
 
-
+   def clean(self):
+      if self.term.type != self.type:
+         raise ValidationError("Term must belong to the same taxonomy! Current: {},{}".format(self.type,self.term.type))

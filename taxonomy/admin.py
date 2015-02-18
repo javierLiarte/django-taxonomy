@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.contenttypes import generic
-from django.core.exceptions import ValidationError
-from taxonomy.models import Taxonomy, TaxonomyTerm, Taxon
+from taxonomy.models import Taxonomy, TaxonomyTerm, TaxonomyMap
+from mptt.admin import MPTTModelAdmin
 
 class TaxonInline(generic.GenericStackedInline):
     model = Taxon
@@ -18,24 +18,27 @@ class TaxonomyAdmin(admin.ModelAdmin):
         }),
     )
 
-class TaxonomyTermAdmin(admin.ModelAdmin):
-    list_display = ('term', 'taxonomy', 'parent')
-    list_filter = ['taxonomy']
-    search_fields = ('term',)
-    fieldsets = (
-        (None, {
-            'fields': ('taxonomy', 'term', 'parent',),
-        }),
-        ('Advanced', {
-            'fields': ('slug',),
-            'classes': ('collapse',),
-        }),
-    )
+#class TaxonomyTermAdmin(admin.ModelAdmin):
+#    list_display = ('term', 'taxonomy', 'parent')
+#    list_filter = ['taxonomy']
+#    search_fields = ('term',)
+#    fieldsets = (
+#        (None, {
+#            'fields': ('taxonomy', 'term', 'parent',),
+#        }),
+#        ('Advanced', {
+#            'fields': ('slug',),
+#            'classes': ('collapse',),
+#        }),
+#    )
+class TaxonomyTermAdmin(MPTTModelAdmin):
+   list_display = ('term','type')
+   list_filter = ('type',)
 
-class TaxonAdmin(admin.ModelAdmin):
+class TaxonomyMapAdmin(MPTTModelAdmin):
    pass
 
 
 admin.site.register(Taxonomy, TaxonomyAdmin)
 admin.site.register(TaxonomyTerm, TaxonomyTermAdmin)
-admin.site.register(Taxon, TaxonAdmin)
+admin.site.register(TaxonomyMap, TaxonomyMapAdmin)
