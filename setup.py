@@ -5,9 +5,13 @@ setup(
     name='django-taxonomy',
     version='0.1.0',
     description='A flexible taxonomy approach for Django.',
-    author="Mike O'Malley",
-    author_email='spuriousdata@gmail.com',
-    url='http://github.com/spuriousdata/django-taxonomy',
+    author="Javier Liarte, Mike O'Malley, ShadowKyogre, Brian K. Jones",
+    author_email='jliarte@gmail.com',
+    url='http://github.com/javierLiarte/django-taxonomy',
+    install_requires=[
+        'django_mptt_admin>=0.2.0',
+        'django-mptt>=0.6.1',
+    ],
     packages=[
         'taxonomy',
         'taxonomy.templatetags',
