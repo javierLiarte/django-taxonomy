@@ -1,3 +1,5 @@
+# coding: utf-8
+
 from django.db import models
 from django.conf import settings
 from django.contrib.contenttypes import generic
@@ -71,29 +73,36 @@ class Taxonomy(models.Model):
 
 class TaxonomyTerm(MPTTModel):
     """Terms are associated with a specific Taxonomy, and should be generically usable with any contenttype"""
-    taxonomy = models.ForeignKey(Taxonomy, related_name='terms')
+    taxonomy = models.ForeignKey(Taxonomy, related_name='%(class)s_terms')
     term = models.CharField(max_length=50)
     parent = TreeForeignKey('self', null=True,blank=True)
+    promoted = models.BooleanField(default=False)
+    weight = models.PositiveIntegerField(default=999)
     slug = models.SlugField(blank=True)
 
     class Meta:
         unique_together = ('taxonomy', 'term', 'parent')
         ordering = ['taxonomy', 'term']
 
-   def __unicode__(self):
+    class MPTTMeta:
+        order_insertion_by = ['term']
+
+    def __unicode__(self):
       return self.term
-   
-   def clean(self):
-      if self.parent:
-         if self.parent.type != self.type:
-            raise ValidationError("Both parent and this term must "
-            "share the same taxonomy!\n"
-            "Current: {}, {}".format(self.parent.type,self.type))
+
+
+    def clean(self):
+        if self.parent:
+            if self.parent.taxonomy != self.taxonomy:
+                raise ValidationError("Both parent and this term must "
+                "share the same taxonomy!\n"
+                "Current: {}, {}".format(self.parent.taxonomy,self.taxonomy))
 
     def save(self, *args, **kwargs):
         if self.slug == "":
             self.slug = slugify(self.term)
         super(TaxonomyTerm, self).save(*args, **kwargs)
+
 
 class TaxonomyMap(models.Model):
     """Mappings between content and any taxonomy types/terms used to classify it"""
@@ -112,6 +121,6 @@ class TaxonomyMap(models.Model):
     def __unicode__(self):
         return u'%s' % self.term
 
-   def clean(self):
-      if self.term.type != self.type:
-         raise ValidationError("Term must belong to the same taxonomy! Current: {},{}".format(self.type,self.term.type))
+    def clean(self):
+        if self.term.type != self.type:
+            raise ValidationError("Term must belong to the same taxonomy! Current: {},{}".format(self.type,self.term.type))
