@@ -95,7 +95,7 @@ class TaxonomyTerm(MPTTModel):
         """
         Get or create TaxonomyMap for self term and given object
         """
-        exisiting_tmaps = TaxonomyMap.get_for_object(object)
+        exisiting_tmaps = TaxonomyMap.objects.get_for_object(object)
         if len(exisiting_tmaps) is 0:
             return TaxonomyMap.objects.get(
                 term=self,
