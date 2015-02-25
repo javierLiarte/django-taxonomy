@@ -91,6 +91,12 @@ class TaxonomyTerm(MPTTModel):
       return self.term
 
 
+    def map_with(self, object):
+        return TaxonomyMap.objects.get_or_create(
+            term=self,
+            object=object)
+
+
     def clean(self):
         if self.parent:
             if self.parent.taxonomy != self.taxonomy:
