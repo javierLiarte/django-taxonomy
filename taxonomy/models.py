@@ -92,9 +92,16 @@ class TaxonomyTerm(MPTTModel):
 
 
     def map_with(self, object):
-        return TaxonomyMap.objects.get_or_create(
-            term=self,
-            object=object)
+        """
+        Get or create TaxonomyMap for self term and given object
+        """
+        exisiting_tmaps = TaxonomyMap.get_for_object(object)
+        if len(exisiting_tmaps) is 0:
+            return TaxonomyMap.objects.get(
+                term=self,
+                object=object)
+        return exisiting_tmaps[0]
+
 
 
     def clean(self):
