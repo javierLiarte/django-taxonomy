@@ -1,10 +1,10 @@
 # coding: utf-8
-
 from django.db import models
 from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
+from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey
 from django.core.exceptions import ValidationError
@@ -79,6 +79,9 @@ class TaxonomyTerm(MPTTModel):
     promoted = models.BooleanField(default=False)
     weight = models.PositiveIntegerField(default=999)
     slug = models.SlugField(blank=True)
+
+    question = models.CharField(_('Question to event subtype selection'), max_length=500, blank=True)
+    help_text = models.CharField(_('Placeholder text for event type input field'), max_length=500, blank=True)
 
     class Meta:
         unique_together = ('taxonomy', 'term', 'parent')

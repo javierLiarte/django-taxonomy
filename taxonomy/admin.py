@@ -29,7 +29,7 @@ class TaxonomyTermAdmin(MPTTModelAdmin):
     search_fields = ('term',)
     fieldsets = (
         (None, {
-            'fields': ('taxonomy', 'term', 'parent', 'promoted',),
+            'fields': ('taxonomy', 'term', 'parent', 'promoted', 'question', 'help_text'),
         }),
         ('Advanced', {
             'fields': ('slug', 'weight',),
