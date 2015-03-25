@@ -8,6 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey
 from django.core.exceptions import ValidationError
+import vinaigrette
+
 
 ###
 ### Managers
@@ -140,3 +142,7 @@ class TaxonomyMap(models.Model):
     def clean(self):
         if self.term.type != self.type:
             raise ValidationError("Term must belong to the same taxonomy! Current: {},{}".format(self.type,self.term.type))
+
+
+vinaigrette.register(TaxonomyTerm, ['term', 'question', 'help_text',])
+vinaigrette.register(Taxonomy, ['type',])
